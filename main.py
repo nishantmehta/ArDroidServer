@@ -14,17 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import cgi
 import webapp2
 import logging
-from ComHandler import ComHandler
+from CartHandler import CartHandler
 
 class MainHandler(webapp2.RequestHandler):
 
-    def get(self):
-        print "hi"
     def post(self):
-        logging.info(self.request)
-        ComHandler.handleCartUpdates(self.request.get('cartID', ''), self.request.get('productID', ''))
+        com = CartHandler()
+        CartHandler.handleCartUpdates(com, self.request.get('cartID', ''), self.request.get('productID', ''))
 
 app = webapp2.WSGIApplication([
     ('/SendProduct', MainHandler)

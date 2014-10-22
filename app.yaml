@@ -12,9 +12,7 @@ handlers:
 
 - url: /SendProduct.*
   script: main.app
-- url: .*
-  script: root.app
 
 libraries:
 - name: webapp2
-  version: "2.5.2"
+  version: latest
