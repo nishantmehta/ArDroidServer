@@ -5,7 +5,7 @@ from DbModel import user
 
 class AuthProcessing():
 
-    def extractUsernameAndPassword(self, requestURL):
+    def extractUserIDAndRegistrationID(self, requestURL):
 
         #Regex to read string between state= and &
         regex = re.compile('state=(.*?)&')
@@ -23,11 +23,23 @@ class AuthProcessing():
     def saveUserRegistrationId(self, userID, registrationId):
         newUser=user(userID=userID, registrationID=registrationId)
         newUser.put()
-        # just for checking purpose, have to removed later.
+        # just for testing purposes, have to removed later.
         users = db.GqlQuery("SELECT * from user")
         #logging.info(str(users.count())
         for data in users :
             logging.info(data.userID + ' ' + data.registrationID)
+        logging.info(self.isUserValid('12345'))
+
+
+    # Checking if user, registrationId exists in the database or not.
+    def isUserValid(self, registrationId):
+
+         users = db.GqlQuery("SELECT * from user where registrationID = :1", registrationId)
+         logging.info(users.count())
+         if(users.count() == 1) :
+             return True
+
+         return False
 
 
 

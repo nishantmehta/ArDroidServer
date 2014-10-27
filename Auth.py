@@ -24,8 +24,12 @@ class AuthHandler(webapp2.RequestHandler):
     def get(self):
         requestURL=str(self.request.uri)
         logging.info("URl handle : "+requestURL)
-        auth = AuthProcessing()
-        auth.extractUsernameAndPassword(requestURL)
+
+        if ('error=access_denied' in requestURL) :
+            logging.info('user did not press accept on consent screen')
+        else :
+            auth = AuthProcessing()
+            auth.extractUserIDAndRegistrationID(requestURL)
 
 
 app = webapp2.WSGIApplication([
