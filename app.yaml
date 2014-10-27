@@ -13,6 +13,9 @@ handlers:
 - url: /SendProduct.*
   script: main.app
 
+- url: /auth.*
+  script: Auth.app
+
 libraries:
 - name: webapp2
   version: latest
