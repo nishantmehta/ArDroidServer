@@ -14,17 +14,48 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import cgi
 import webapp2
-import logging
 from CartHandler import CartHandler
+from GetProductHandler import   GetProductHandler
+import RequestObject
+import json
 
-class MainHandler(webapp2.RequestHandler):
-
+class CartHandle(webapp2.RequestHandler):
     def post(self):
         com = CartHandler()
         CartHandler.handleCartUpdates(com, self.request.get('cartID', ''), self.request.get('productID', ''))
 
+#class GetProductHandle(webapp2.RequestHandler):
+#    def post(self):
+#        product1 = self
+#        prodHandle = GetProductHandler()
+#        GetProductHandler.getProcuctLocation(prodHandle,self, self.request.get('cartID', ''), self.request.get('product', ''))
+
+#$/paircart?cartid=1234567&userid=nishantmehta.n
+class PairCart(webapp2.RequestHandler):
+    def get(self):
+        url = self.request.uri
+        requestVar = self.getRequestObject(url)
+        self.response.out.write("{status: OK}")
+
+    def getRequestObject(self, url):
+        variables =.., url.split('?')[-1].split('&')
+        return RequestObject.PairCartRequestObject(variables[-1].split('=')[-1],variables[-2].split('=')[-1])
+
+#$/getproductinformation?cartid=1234556&productname=peanutbutter
+class GetProductLocation(webapp2.RequestHandler):
+    def get(self):
+        url = self.request.uri
+        requestVar = self.getRequestObject(url)
+        self.response.out.write(json.dumps({"shelf info": "3rd shelf", "aisle": 4}, sort_keys=True))
+
+    def getRequestObject(self, url):
+        variables = url.split('?')[-1].split('&')
+        return RequestObject.GetProductLocation(variables[-1].split('=')[-1],variables[-2].split('=')[-1])
+
+
 app = webapp2.WSGIApplication([
-    ('/SendProduct', MainHandler)
+    ('/SendProduct', CartHandle),
+    ('/getproductinformation', GetProductLocation),
+    ('/pairCart', PairCart)
 ], debug=True)

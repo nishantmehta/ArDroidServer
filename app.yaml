@@ -9,8 +9,7 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
-
-- url: /SendProduct.*
+- url: /.*
   script: main.app
 
 - url: /auth.*
