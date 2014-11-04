@@ -39,7 +39,7 @@ class PairCart(webapp2.RequestHandler):
         self.response.out.write("{status: OK}")
 
     def getRequestObject(self, url):
-        variables =.., url.split('?')[-1].split('&')
+        variables = url.split('?')[-1].split('&')
         return RequestObject.PairCartRequestObject(variables[-1].split('=')[-1],variables[-2].split('=')[-1])
 
 #$/getproductinformation?cartid=1234556&productname=peanutbutter
