@@ -17,6 +17,7 @@
 import webapp2
 from CartHandler import CartHandler
 from GetProductHandler import   GetProductHandler
+from ProductInfo import ProductInfo
 import RequestObject
 import json
 
@@ -51,6 +52,18 @@ class GetProductLocation(webapp2.RequestHandler):
         variables = url.split('?')[-1].split('&')
         return RequestObject.GetProductLocation(variables[-1].split('=')[-1],variables[-2].split('=')[-1])
 
+#getProductINfo API
+class ProductInfoHandler(webapp2.RequestHandler):
+    def get(self):
+        requestURL=str(self.request.uri)
+        logging.info("URl handle : "+requestURL)
+        pdInfo = ProductInfo()
+        productID = self.request.get('productID', '')
+        logging.info('productID ' + productID)
+        #pdInfo.inputProduct()
+        pdInfo.getProductInfo(productID)
+        
+
 #get project info API - vishal
 
 
@@ -59,5 +72,6 @@ class GetProductLocation(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([
     ('/SendProduct', CartHandle),
     ('/getproductinformation', GetProductLocation),
+    ('/GetProductInfo', ProductInfoHandler),
     ('/pairCart', PairCart)
 ], debug=True)
