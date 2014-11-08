@@ -76,5 +76,6 @@ app = webapp2.WSGIApplication([
     ('/SendProduct', CartHandle),
     ('/getproductinformation', GetProductLocation),
     ('/GetProductInfo', ProductInfoHandler),
-    ('/pairCart', PairCart)
+    ('/pairCart', PairCart),
+    ('/GCMTest',GCMTester)
 ], debug=True)
