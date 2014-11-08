@@ -70,7 +70,6 @@ class ProductInfoHandler(webapp2.RequestHandler):
 
 class GCMTester(webapp2.RequestHandler):
     def get(self):
-        self.response.out.write("test")
         res, cont = GCMHandler.GCMSend('APA91bF_JjnHkt3pM3mJHLmITlOwNXYLY0gahJkKetcu2HFnqk3erou0i4wltpdQVxsMrYtpnfnvtXl8c1-T7PCwwBWfBzPLEiyFxt2ZEKmk8e70FnoyKPeGX1Edp6lslxk0LkK2bItCs8RlSgTKgmROH5ITBFuvNw','HELLO!')
         self.response.out.write(res)
         self.response.out.write(cont)
