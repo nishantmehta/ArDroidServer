@@ -16,6 +16,7 @@ class GCMHandler():
         data = dict(registration_ids = [ UserGCMID ], data = {'message': Message} ) #if didn't work, try registration id to be a list it self
         #print data
         resp, content = h.request("https://android.googleapis.com/gcm/send", "POST", headers = headers, body = dumps(data) )
+        return resp, content
         #print resp
         #print content
 
