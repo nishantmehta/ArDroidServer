@@ -17,4 +17,4 @@ def GCMSend(UserGCMID,Message):
     print resp
     print content
 
-GCMSend('APA91bE4Kglfn6ntxLdewmSpsAI1rwnrYpffjWR_KpYGfnWhYFgxphZz3_j4-KvW2y6rYTAeqZfgvBmL-rnPIyAXbdbMxsc2y597bDVAM1YF8COBHvMVoJM6P-x2OQLFmlWvIWx24svxDlm6WeIn7ZqsTiSDKi7WhA','HELLO!')
+#GCMSend('APA91bF_JjnHkt3pM3mJHLmITlOwNXYLY0gahJkKetcu2HFnqk3erou0i4wltpdQVxsMrYtpnfnvtXl8c1-T7PCwwBWfBzPLEiyFxt2ZEKmk8e70FnoyKPeGX1Edp6lslxk0LkK2bItCs8RlSgTKgmROH5ITBFuvNw','HELLO!')
