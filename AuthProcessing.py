@@ -1,7 +1,11 @@
 import logging
 import re
+from google.appengine.api import urlfetch
+from urllib import urlencode
+import json
 from google.appengine.ext import db
 from DbModel import user
+
 
 class AuthProcessing():
 
@@ -10,17 +14,28 @@ class AuthProcessing():
         #Regex to read string between state= and &
         regex = re.compile('state=(.*?)&')
         m = regex.search(requestURL)
-        userRegistrationID = m.group(1)
-        logging.info(m.group(1))
+        registrationID = m.group(1)
+        logging.info('Registration id is :' + m.group(1))
 
-        userID = userRegistrationID.split('_')[0]
-        registrationId = userRegistrationID.split('_')[1]
-        logging.info('userId, registrationId ' + userID +'  '+ registrationId)
-        self.saveUserRegistrationId(userID, registrationId)
+        #Reading Auth code from the redirected URL
+        regexCode =  re.compile('&code=(.*?)$')
+        m = regexCode.search(requestURL)
+        code = m.group(1)
+        logging.info('Authorization code given by google server ' + code)
+
+        #getting Access code using the Authorization code
+        accessToken = self.getAccessToken(code)
+
+        #getting email id use the Auth code using the googleplus profile endpoint
+        userID = self.getEmailId(accessToken)
+
+        logging.info('userId, registrationId ' + userID +'  '+ registrationID)
+        self.saveUserRegistrationId(userID, registrationID)
 
 
 
     def saveUserRegistrationId(self, userID, registrationId):
+
         newUser=user(userID=userID, registrationID=registrationId)
         newUser.put()
         # just for testing purposes, have to removed later.
@@ -40,6 +55,45 @@ class AuthProcessing():
              return True
 
          return False
+
+
+    def getAccessToken(self, code):
+
+
+        token_url = 'https://accounts.google.com/o/oauth2/token'
+        payload = {
+            'code': code,
+            'client_id': '378239996981-jf1rp21g727i96d64jogsv708lp5826i.apps.googleusercontent.com',
+            'client_secret': 'krZnjy_XUTMrMw8M2KuEtjvM',
+            'redirect_uri': 'http://localhost:8080/auth',
+            'grant_type': 'authorization_code'
+        }
+
+        resp = urlfetch.fetch(
+            url=token_url,
+            payload=urlencode(payload),
+            method=urlfetch.POST,
+            headers={'Content-Type': 'application/x-www-form-urlencoded'})
+
+        response = json.loads(resp.content)
+        accesstoken = response['access_token']
+        logging.info('access_token supplied by google server: ' + accesstoken)
+
+        return accesstoken
+
+
+    def getEmailId(self, accesstoken) :
+
+        userinfo = urlfetch.fetch('https://www.googleapis.com/plus/v1/people/me?access_token='+accesstoken)
+        userProfile = json.loads(userinfo.content)
+        emailId = userProfile['emails'][0]['value']
+        logging.info('emailId supplied by google server: ' + emailId)
+
+        return emailId
+
+
+
+
 
 
 
