@@ -73,9 +73,9 @@ class AuthProcessing():
         token_url = 'https://accounts.google.com/o/oauth2/token'
         payload = {
             'code': code,
-            'client_id': '378239996981-jf1rp21g727i96d64jogsv708lp5826i.apps.googleusercontent.com',
-            'client_secret': 'krZnjy_XUTMrMw8M2KuEtjvM',
-            'redirect_uri': 'http://localhost:8080/auth',
+            'client_id': '378239996981-nmpgvld6r8d83k0u6nl1822v3ml6hl4f.apps.googleusercontent.com',
+            'client_secret': 'c6mAEjDKBFwjbER8XhPv35Xm',
+            'redirect_uri': 'https://mcprojectserver.appspot.com/auth',
             'grant_type': 'authorization_code'
         }
 
@@ -86,7 +86,13 @@ class AuthProcessing():
             headers={'Content-Type': 'application/x-www-form-urlencoded'})
 
         response = json.loads(resp.content)
-        accesstoken = response['access_token']
+        accesstoken = None
+        try :
+            accesstoken = response['access_token']
+        except KeyError:
+            logging.info('access_token not supplied by google server')
+            return
+
         logging.info('access_token supplied by google server: ' + accesstoken)
 
         return accesstoken
