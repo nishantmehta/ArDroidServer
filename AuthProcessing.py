@@ -1,10 +1,20 @@
 import logging
 import re
+import json
 from google.appengine.api import urlfetch
 from urllib import urlencode
-import json
 from google.appengine.ext import db
 from DbModel import user
+
+"""
+This file is used to get the user authenticated by making a http call in the below format
+
+https://accounts.google.com/o/oauth2/auth?scope=email%20profile&redirect_uri=https://mcprojectserver.appspot.com/auth&response_type=code&client_id=
+	    CLIENT_ID&state=REGISTRATION_ID
+
+The user will be authenticated and the username(email_id), registration Id will be saved in the database
+
+"""
 
 
 class AuthProcessing():
