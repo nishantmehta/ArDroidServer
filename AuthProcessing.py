@@ -37,10 +37,16 @@ class AuthProcessing():
         accessToken = self.getAccessToken(code)
 
         #getting email id use the Auth code using the googleplus profile endpoint
-        userID = self.getEmailId(accessToken)
+        if  accessToken :
+            userID = self.getEmailId(accessToken)
+        else :
+             logging.info('accessToken not got from google server')
 
-        logging.info('userId, registrationId ' + userID +'  '+ registrationID)
-        self.saveUserRegistrationId(userID, registrationID)
+        if userID :
+            logging.info('userId, registrationId ' + userID +'  '+ registrationID)
+            self.saveUserRegistrationId(userID, registrationID)
+        else :
+            logging.info('emailId not found')
 
 
 
@@ -102,9 +108,14 @@ class AuthProcessing():
 
         userinfo = urlfetch.fetch('https://www.googleapis.com/plus/v1/people/me?access_token='+accesstoken)
         userProfile = json.loads(userinfo.content)
-        emailId = userProfile['emails'][0]['value']
-        logging.info('emailId supplied by google server: ' + emailId)
+        emailId = None
+        try :
+         emailId = userProfile['emails'][0]['value']
+        except KeyError:
+              logging.info('emailId not got from google server')
+              return
 
+        logging.info('emailId supplied by google server: ' + emailId)
         return emailId
 
 
