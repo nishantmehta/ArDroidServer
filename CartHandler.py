@@ -5,6 +5,8 @@ class CartHandler():
 
     def handleCartUpdates(self, cartid, productid):
         print cartid + productid
+        #call the get product functions and send the info to Rooz's code
+        #create logs
         logging.info("cart is " + cartid)
         logging.info("product is " + productid)
 
