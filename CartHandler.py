@@ -1,6 +1,6 @@
 import logging
 import ProductInfo
-import GCMHandler
+from GCM import GCMHandler
 from google.appengine.ext import db
 
 class CartHandler():

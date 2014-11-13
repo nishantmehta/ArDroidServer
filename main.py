@@ -94,7 +94,12 @@ class ProductInfoHandler(webapp2.RequestHandler):
 
 class GCMTester(webapp2.RequestHandler):
     def get(self):
-        res, cont = GCMHandler.GCMSend('APA91bH4JFzsZVM-LeliNWc0MU0zwzNNRn9ZidCKKcncUnRXz1ACcWVBD8B_HWOO4D26j3WPQ6jThZXFtV04jRACg4uy5h5hqa_w-B0XRFPHLGkHGr0Tx71BDRRrmubnemdbd5Lf4C92YA4byhEsch-P_ZlYUIru821jooOW-54T88Rbtf13Lx4','milk')
+        url = self.request.uri
+        data = url.split('?')
+        gcmId = data[1]
+        message = data[2]
+        logging.info('Gcmid ' + gcmId + 'message '  + message)
+        res, cont = GCMHandler.GCMSend(gcmId,message)
         self.response.out.write(res)
         self.response.out.write(cont)
 
