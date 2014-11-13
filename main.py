@@ -22,6 +22,8 @@ from GCM import GCMHandler
 import RequestObject
 import json
 import logging
+from google.appengine.ext import db
+from DbModel import cartGcmMapping
 
 #convert this to a rest API
 class CartHandle(webapp2.RequestHandler):
@@ -31,18 +33,36 @@ class CartHandle(webapp2.RequestHandler):
 
 #$/paircart?cartid=1234567&userid=nishantmehta.n&gcmid=nvkjdsnjnsdvkjngfkbdfg
 class PairCart(webapp2.RequestHandler):
-
      def get(self):
           url = self.request.uri
           requestVar = self.getRequestObject(url)
+
+          gcmMap = cartGcmMapping(gcmId = requestVar.GCMID,  cartId = requestVar.cartID)
+          gcmMap.put()
+
           #call anupam's code to add an entry to the map
           print requestVar.GCMID
+
           self.response.out.write("{status: OK}")
 
 
      def getRequestObject(self, url):
-          variables = url.split('?')[-1].split('&')
-          return RequestObject.PairCartRequestObject(variables[-1].split('=')[-1],variables[-2].split('=')[-1],variables[-3].split('=')[-1])
+        variables = url.split('?')[-1].split('&')
+        return RequestObject.PairCartRequestObject(variables[-1].split('=')[-1],variables[-2].split('=')[-1],variables[-3].split('=')[-1])
+
+#$/unpaircart?cartid=1234567&userid=nishantmehta.n&gcmid=nvkjdsnjnsdvkjngfkbdfg
+class UnPairCart(webapp2.RequestHandler):
+     def get(self):
+          url = self.request.uri
+          requestVar = self.getRequestObject(url)
+          gcmIdCartId = db.GqlQuery("SELECT * from cartGcmMapping where cartId = :1", requestVar.cartID)
+          db.delete(cartGcmMapping, gcmIdCartId)
+          self.response.out.write("{status: OK}")
+
+
+     def getRequestObject(self, url):
+        variables = url.split('?')[-1].split('&')
+        return RequestObject.PairCartRequestObject(variables[-1].split('=')[-1],variables[-2].split('=')[-1],variables[-3].split('=')[-1])
 
 
 #$/getproductinformation?cartid=1234556&productname=peanutbutter
@@ -74,14 +94,14 @@ class ProductInfoHandler(webapp2.RequestHandler):
 
 class GCMTester(webapp2.RequestHandler):
     def get(self):
-        res, cont = GCMHandler.GCMSend('APA91bF_JjnHkt3pM3mJHLmITlOwNXYLY0gahJkKetcu2HFnqk3erou0i4wltpdQVxsMrYtpnfnvtXl8c1-T7PCwwBWfBzPLEiyFxt2ZEKmk8e70FnoyKPeGX1Edp6lslxk0LkK2bItCs8RlSgTKgmROH5ITBFuvNw','HELLO!')
+        res, cont = GCMHandler.GCMSend('APA91bH4JFzsZVM-LeliNWc0MU0zwzNNRn9ZidCKKcncUnRXz1ACcWVBD8B_HWOO4D26j3WPQ6jThZXFtV04jRACg4uy5h5hqa_w-B0XRFPHLGkHGr0Tx71BDRRrmubnemdbd5Lf4C92YA4byhEsch-P_ZlYUIru821jooOW-54T88Rbtf13Lx4','milk')
         self.response.out.write(res)
         self.response.out.write(cont)
 
 app = webapp2.WSGIApplication([
-    ('/SendProduct', CartHandle),
+    ('/sendproduct', CartHandle),
     ('/getproductinformation', GetProductLocation),
-    ('/GetProductInfo', ProductInfoHandler),
-    ('/pairCart', PairCart),
-    ('/GCMTest',GCMTester)
+    ('/getproductinfo', ProductInfoHandler),
+    ('/paircart', PairCart),
+    ('/gcmtest',GCMTester)
 ], debug=True)
