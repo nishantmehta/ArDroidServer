@@ -21,6 +21,7 @@ from ProductInfo import ProductInfo
 from GCM import GCMHandler
 import RequestObject
 import json
+import logging
 
 #convert this to a rest API
 class CartHandle(webapp2.RequestHandler):
@@ -28,17 +29,20 @@ class CartHandle(webapp2.RequestHandler):
         com = CartHandler()
         CartHandler.handleCartUpdates(com, self.request.get('cartID', ''), self.request.get('productID', ''))
 
-#$/paircart?cartid=1234567&userid=nishantmehta.n
+#$/paircart?cartid=1234567&userid=nishantmehta.n&gcmid=nvkjdsnjnsdvkjngfkbdfg
 class PairCart(webapp2.RequestHandler):
-    def get(self):
-        url = self.request.uri
-        requestVar = self.getRequestObject(url)
-        #call anupam's code to add an entry to the map
-        self.response.out.write("{status: OK}")
 
-    def getRequestObject(self, url):
-        variables = url.split('?')[-1].split('&')
-        return RequestObject.PairCartRequestObject(variables[-1].split('=')[-1],variables[-2].split('=')[-1])
+     def get(self):
+          url = self.request.uri
+          requestVar = self.getRequestObject(url)
+          #call anupam's code to add an entry to the map
+          print requestVar.GCMID
+          self.response.out.write("{status: OK}")
+
+
+     def getRequestObject(self, url):
+          variables = url.split('?')[-1].split('&')
+          return RequestObject.PairCartRequestObject(variables[-1].split('=')[-1],variables[-2].split('=')[-1],variables[-3].split('=')[-1])
 
 
 #$/getproductinformation?cartid=1234556&productname=peanutbutter
