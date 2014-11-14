@@ -20,5 +20,5 @@ class purchaseLogs(db.Model):
 
 
 class cartGcmMapping(db.Model) :
-        cartId = db.StringProperty(required= True, indexed= True)
         gcmId = db.StringProperty(required= True, indexed= False)
+        cartId = db.StringProperty(required= True, indexed= True)

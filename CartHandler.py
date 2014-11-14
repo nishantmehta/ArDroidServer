@@ -1,7 +1,8 @@
 import logging
-import ProductInfo
+from  ProductInfo import ProductInfo
 from GCM import GCMHandler
 from google.appengine.ext import db
+import json
 
 class CartHandler():
 
@@ -12,12 +13,13 @@ class CartHandler():
 
         gcmIdCartId = db.GqlQuery("SELECT * from cartGcmMapping where cartId = :1", cartid)
 
-        if gcmIdCartId.gcmdId :
-            gcmId = gcmIdCartId.gcmId
-            logging.info('GCMId' + gcmId)
-            logging.info('productInfo' + productInfo)
-            gcm = GCMHandler()
-            gcm.GCMSend(gcmId, productInfo)
+        for data in gcmIdCartId :
+            if data.gcmId :
+                gcmId = data.gcmId
+                logging.info('GCMId' + gcmId)
+                logging.info('productInfo' + json.dumps(productInfo))
+                gcm = GCMHandler()
+                gcm.GCMSend(gcmId, productInfo)
         #create logs
         logging.info("cart is " + cartid)
         logging.info("product is " + productid)

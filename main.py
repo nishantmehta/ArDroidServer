@@ -27,16 +27,19 @@ from DbModel import cartGcmMapping
 
 #convert this to a rest API
 class CartHandle(webapp2.RequestHandler):
-    def post(self):
+    def get(self):
+        url = self.request.uri
+        productData = url.split('?')
+        logging.info('cartId ' + productData[1] + 'productID ' + productData[2])
         com = CartHandler()
-        CartHandler.handleCartUpdates(com, self.request.get('cartID', ''), self.request.get('productID', ''))
+        CartHandler.handleCartUpdates(com, productData[1], productData[2])
 
 #$/paircart?cartid=1234567&userid=nishantmehta.n&gcmid=nvkjdsnjnsdvkjngfkbdfg
 class PairCart(webapp2.RequestHandler):
      def get(self):
           url = self.request.uri
           requestVar = self.getRequestObject(url)
-
+          logging.info("gcm id " + requestVar.GCMID + " >>>>>>>>>>>>>>. cart id is " + requestVar.cartID)
           gcmMap = cartGcmMapping(gcmId = requestVar.GCMID,  cartId = requestVar.cartID)
           gcmMap.put()
 
@@ -48,7 +51,7 @@ class PairCart(webapp2.RequestHandler):
 
      def getRequestObject(self, url):
         variables = url.split('?')[-1].split('&')
-        return RequestObject.PairCartRequestObject(variables[-1].split('=')[-1],variables[-2].split('=')[-1],variables[-3].split('=')[-1])
+        return RequestObject.PairCartRequestObject(variables[0].split('=')[-1],variables[1].split('=')[-1],variables[2].split('=')[-1])
 
 #$/unpaircart?cartid=1234567&userid=nishantmehta.n&gcmid=nvkjdsnjnsdvkjngfkbdfg
 class UnPairCart(webapp2.RequestHandler):
@@ -62,7 +65,7 @@ class UnPairCart(webapp2.RequestHandler):
 
      def getRequestObject(self, url):
         variables = url.split('?')[-1].split('&')
-        return RequestObject.PairCartRequestObject(variables[-1].split('=')[-1],variables[-2].split('=')[-1],variables[-3].split('=')[-1])
+        return RequestObject.PairCartRequestObject(variables[0].split('=')[-1],variables[1].split('=')[-1],variables[2].split('=')[-1])
 
 
 #$/getproductinformation?cartid=1234556&productname=peanutbutter
@@ -85,7 +88,7 @@ class ProductInfoHandler(webapp2.RequestHandler):
         pdInfo = ProductInfo()
         productID = self.request.get('productID', '')
         logging.info('productID ' + productID)
-        #pdInfo.inputProduct()
+        pdInfo.inputProduct()
         pdInfo.getProductInfo(productID)
         
 

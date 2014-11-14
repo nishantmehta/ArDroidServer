@@ -25,10 +25,10 @@ class ProductInfo():
 
     def inputProduct(self):
 
-        prodNames = ['Milk', 'Eggs', 'Rice', 'Chicken Patties', 'Tomato', 'Potato', 'Bread', 'Yogurt', 'Corn Flakes',
-                     'Onions', 'Apples']
-        for i in range(0, 11):
-            prodID = str(i)
+        prodNames = ['milk', 'beans', 'soya', 'jeans']
+        prodId = ['%5B-82,-66,81,24,0,0,7,-32%5D ', '%5B-81,-66,81,24,0,0,7,-32%5D' ,'%5B-80,-66,80,24,0,0,7,-32%5D', '%5B-79,-66,80,24,0,0,7,-32%5D'  ]
+        for i in range(len(prodNames)):
+            prodID = prodId[i]
             prodName = prodNames[i]
             price = str(randint(1,100))
             discount = str(randint(1,99)/100)
