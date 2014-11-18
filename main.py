@@ -41,6 +41,13 @@ class PairCart(webapp2.RequestHandler):
           requestVar = self.getRequestObject(url)
           logging.info("gcm id " + requestVar.GCMID + " >>>>>>>>>>>>>>. cart id is " + requestVar.cartID)
           gcmMap = cartGcmMapping(gcmId = requestVar.GCMID,  cartId = requestVar.cartID)
+          pairingInfo =  db.GqlQuery("SELECT * from cartGcmMapping where cartId = :1", requestVar.cartID)
+          if pairingInfo.count() > 0 :
+            GCMHandler.GCMSend(pairingInfo.get().gcmId,"Your pairing session has expired!")
+            for p in pairingInfo:
+                p.delete()
+
+
           gcmMap.put()
 
           #call anupam's code to add an entry to the map
