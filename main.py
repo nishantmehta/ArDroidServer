@@ -25,14 +25,16 @@ import logging
 from google.appengine.ext import db
 from DbModel import cartGcmMapping
 
-#convert this to a rest API
+#$/sendproduct?cartid=1234567&productid=1234234234
 class CartHandle(webapp2.RequestHandler):
     def get(self):
         url = self.request.uri
-        productData = url.split('?')
-        logging.info('cartId ' + productData[1] + 'productID ' + productData[2])
+        productData = url.split('?')[1].split('&')
+        cartId = productData[0].split('=')[1]
+        productId = productData[1].split('=')[1]
+        logging.info('cartId ' + cartId + 'productId ' + productId)
         com = CartHandler()
-        CartHandler.handleCartUpdates(com, productData[1], productData[2])
+        CartHandler.handleCartUpdates(com, cartId, productId)
 
 #$/paircart?cartid=1234567&userid=nishantmehta.n&gcmid=nvkjdsnjnsdvkjngfkbdfg
 class PairCart(webapp2.RequestHandler):
