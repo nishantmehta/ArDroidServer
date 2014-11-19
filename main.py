@@ -95,14 +95,14 @@ class GetProductLocation(webapp2.RequestHandler):
 #getProductINfo API
 class ProductInfoHandler(webapp2.RequestHandler):
     def get(self):
-        requestURL=str(self.request.uri)
+        self.response.out.write(ProductInfo.getProductInfoFromStore("14401160"))
+        """requestURL=str(self.request.uri)
         logging.info("URl handle : "+requestURL)
         pdInfo = ProductInfo()
         productID = self.request.get('productID', '')
         logging.info('productID ' + productID)
         pdInfo.inputProduct()
-        pdInfo.getProductInfo(productID)
-        
+        pdInfo.getProductInfo(productID)"""
 
 #get project info API - vishal
 

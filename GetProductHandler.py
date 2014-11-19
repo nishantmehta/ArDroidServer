@@ -3,6 +3,7 @@ import logging
 import json
 class GetProductHandler():
 
+
     def getProcuctLocation(self,request, cartid, productid):
         logging.info("cart is " + cartid)
         logging.info("product is " + productid)

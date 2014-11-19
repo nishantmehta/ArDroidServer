@@ -4,8 +4,13 @@ from google.appengine.ext import db
 from DbModel import productInfo
 from random import randint
 import json
+from httplib2 import Http
 
 class ProductInfo():
+
+    Mappings = dict(walmart= {"14401160":"40439294"} )
+    WALMART_API = "http://api.walmartlabs.com/v1/items/"
+    WALMART_API_KEY = "?apiKey=xnh83gg5vygkn4pfr4nvqmh4&format=json"
 
     def getProductInfo(self, prodID):
         logging.info("product is " + prodID)
@@ -22,6 +27,16 @@ class ProductInfo():
                         "Discount": data.discount, "location": data.location}
                 logging.info(json.dumps(list,))
                 return (json.dumps(list))
+
+    @staticmethod
+    def getProductInfoFromStore(productID,store="walmart"):
+        storeMap = ProductInfo.Mappings[store]
+        storeProductID = storeMap[productID]
+        url = ProductInfo.WALMART_API + storeProductID + ProductInfo.WALMART_API_KEY;
+        h = Http()
+        headers, content = h.request(url,"GET")
+        totalProduct = json.loads(content.decode("utf-8"))
+        return {"productID":productID, "productName":totalProduct['name'].encode('utf-8'),"Price":totalProduct['salePrice'],}#"category":totalProduct['categoryPath'].encode('utf-8')}
 
     def inputProduct(self):
 

@@ -9,7 +9,7 @@ class CartHandler():
     def handleCartUpdates(self, cartid, productid):
         print cartid + productid
         pInfo = ProductInfo()
-        productInfo =  pInfo.getProductInfo(productid)
+        productInfo =  pInfo.getProductInfoFromStore(productid)#default is walmart
 
         gcmIdCartId = db.GqlQuery("SELECT * from cartGcmMapping where cartId = :1", cartid)
 
