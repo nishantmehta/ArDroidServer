@@ -37,6 +37,15 @@ class CartHandle(webapp2.RequestHandler):
         CartHandler.handleCartUpdates(com, cartId, productId)
         self.response.out.write("{status: OK}")
 
+class CartHandleRemove(webapp2.RequestHandler):
+    def get(self):
+        url = self.request.uri
+        productData = url.split('?')[1].split('&')
+        cartId = productData[0].split('=')[1]
+        productId = productData[1].split('=')[1]
+        logging.info('cartId ' + cartId + 'productId ' + productId)
+        com = CartHandler()
+        CartHandler.removeProductFromCart(com, cartId, productId)
 
 #$/paircart?cartid=1234567&userid=nishantmehta.n&gcmid=nvkjdsnjnsdvkjngfkbdfg
 class PairCart(webapp2.RequestHandler):
@@ -123,5 +132,6 @@ app = webapp2.WSGIApplication([
     ('/getproductinformation', GetProductLocation),
     ('/getproductinfo', ProductInfoHandler),
     ('/paircart', PairCart),
-    ('/gcmtest',GCMTester)
+    ('/gcmtest',GCMTester),
+    ('/removeproduct', CartHandleRemove)
 ], debug=True)

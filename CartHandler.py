@@ -28,6 +28,22 @@ class CartHandler():
 
     def removeProductFromCart(self, cartId, productId):
         print "this functions will remove the product from cart"
+        print cartid + productid
+        pInfo = ProductInfo()
+        productInfo =  json.loads(pInfo.getProductInfo(productid))
+        productInfo["status"] = "Delete"
+        print productInfo
+        gcmIdCartId = db.GqlQuery("SELECT * from cartGcmMapping where cartId = :1", cartid)
+
+        for data in gcmIdCartId :
+            if data.gcmId :
+                gcmId = data.gcmId
+                logging.info('GCMId' + gcmId)
+                logging.info('productInfo' + json.dumps(productInfo))
+                gcm = GCMHandler()
+                gcm.GCMSend(gcmId, productInfo)
+        #create logs
+        logging.info("Removed the Product ")
 
 
    # def createProductLogs(self, cartID, productID) :
