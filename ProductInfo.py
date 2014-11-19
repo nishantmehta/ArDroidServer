@@ -29,14 +29,14 @@ class ProductInfo():
                 return (json.dumps(list))
 
     @staticmethod
-    def getProductInfoFromStore(productID,store="walmart"):
+    def getProductInfoFromStore(productID,status,store="walmart"):
         storeMap = ProductInfo.Mappings[store]
         storeProductID = storeMap[productID]
         url = ProductInfo.WALMART_API + storeProductID + ProductInfo.WALMART_API_KEY;
         h = Http()
         headers, content = h.request(url,"GET")
         totalProduct = json.loads(content.decode("utf-8"))
-        return {"productID":productID, "productName":totalProduct['name'].encode('utf-8'),"Price":totalProduct['salePrice'],}#"category":totalProduct['categoryPath'].encode('utf-8')}
+        return {"productID":productID, "productName":totalProduct['name'].encode('utf-8'),"Price":totalProduct['salePrice'],"status":status}#"category":totalProduct['categoryPath'].encode('utf-8')}
 
     def inputProduct(self):
 

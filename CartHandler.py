@@ -9,7 +9,7 @@ class CartHandler():
     def handleCartUpdates(self, cartid, productid):
         print cartid + productid
         pInfo = ProductInfo()
-        productInfo =  pInfo.getProductInfoFromStore(productid)#default is walmart
+        productInfo =  pInfo.getProductInfoFromStore(productid,"Add")#default is walmart
 
         gcmIdCartId = db.GqlQuery("SELECT * from cartGcmMapping where cartId = :1", cartid)
 
@@ -26,12 +26,12 @@ class CartHandler():
 
 
 
-    def removeProductFromCart(self, cartId, productId):
+    def removeProductFromCart(self, cartid, productid):
         print "this functions will remove the product from cart"
         print cartid + productid
         pInfo = ProductInfo()
-        productInfo =  json.loads(pInfo.getProductInfo(productid))
-        productInfo["status"] = "Delete"
+        remove = "Remove"
+        productInfo =  pInfo.getProductInfoFromStore(productid,remove)
         print productInfo
         gcmIdCartId = db.GqlQuery("SELECT * from cartGcmMapping where cartId = :1", cartid)
 
