@@ -83,7 +83,9 @@ class UnPairCart(webapp2.RequestHandler):
           url = self.request.uri
           requestVar = self.getRequestObject(url)
           gcmIdCartId = db.GqlQuery("SELECT * from CartGcmMapping where cartId = :1", requestVar.cartID)
-          db.delete(CartGcmMapping, gcmIdCartId)
+          if (gcmIdCartId.count() > 0 ) :
+              for data in gcmIdCartId :
+                data.delete()
           self.response.out.write("{status: OK}")
 
 
@@ -135,6 +137,7 @@ app = webapp2.WSGIApplication([
     ('/getproductinformation', GetProductLocation),
     ('/getproductinfo', ProductInfoHandler),
     ('/paircart', PairCart),
+    ('/unpaircart', UnPairCart),
     ('/gcmtest',GCMTester),
     ('/removeproduct', CartHandleRemove)
 ], debug=True)
