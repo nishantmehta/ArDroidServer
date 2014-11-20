@@ -109,7 +109,7 @@ class GetProductLocation(webapp2.RequestHandler):
 #getProductINfo API
 class ProductInfoHandler(webapp2.RequestHandler):
     def get(self):
-        self.response.out.write(ProductInfo.getProductInfoFromStore("14401160"))
+        self.response.out.write(ProductInfo.getProductInfoFromStore("14401160", "add"))
         """requestURL=str(self.request.uri)
         logging.info("URl handle : "+requestURL)
         pdInfo = ProductInfo()
