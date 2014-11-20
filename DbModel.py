@@ -12,13 +12,13 @@ class productInfo(db.Model):
         discount = db.StringProperty(required=True, indexed=False)
         location = db.StringProperty(required=True, indexed=False)
 
-class purchaseLogs(db.Model):
-        purchaseDate = db.DateProperty(required= True, indexed= True)
-        userID = db.StringProperty(required=True, indexed= True)
-        productID = db.StringProperty(required=True, indexed = False)
-        listID = db.StringProperty(required=True, indexed = True)
+class PurchaseLogs(db.Model):
+        purchaseTimeStamp = db.DateTimeProperty(required= True, indexed= True)
+        userId = db.StringProperty(required=True, indexed= True)
+        productId = db.StringProperty(required=True, indexed = False)
 
 
-class cartGcmMapping(db.Model) :
+class CartGcmMapping(db.Model) :
         gcmId = db.StringProperty(required= True, indexed= False)
         cartId = db.StringProperty(required= True, indexed= True)
+        userId = db.StringProperty(required= True, indexed= True)

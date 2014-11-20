@@ -1,51 +1,95 @@
 import logging
+import json
 from  ProductInfo import ProductInfo
 from GCM import GCMHandler
 from google.appengine.ext import db
-import json
+from DbModel import PurchaseLogs
+
 
 class CartHandler():
 
-    def handleCartUpdates(self, cartid, productid):
-        print cartid + productid
-        pInfo = ProductInfo()
-        productInfo =  pInfo.getProductInfoFromStore(productid,"Add")#default is walmart
+    cartGcmMap = {}
+    cartUserMap = {}
 
-        gcmIdCartId = db.GqlQuery("SELECT * from cartGcmMapping where cartId = :1", cartid)
-
-        for data in gcmIdCartId :
-            if data.gcmId :
-                gcmId = data.gcmId
-                logging.info('GCMId' + gcmId)
-                logging.info('productInfo' + json.dumps(productInfo))
-                gcm = GCMHandler()
-                gcm.GCMSend(gcmId, productInfo)
-        #create logs
-        logging.info("cart is " + cartid)
-        logging.info("product is " + productid)
+    def addProductToCart(self, cartid, productid, timeStamp):
 
 
+        logging.info("cartId is " + cartid + " productId is " + productid)
 
-    def removeProductFromCart(self, cartid, productid):
-        print "this functions will remove the product from cart"
-        print cartid + productid
-        pInfo = ProductInfo()
-        remove = "Remove"
-        productInfo =  pInfo.getProductInfoFromStore(productid,remove)
-        print productInfo
-        gcmIdCartId = db.GqlQuery("SELECT * from cartGcmMapping where cartId = :1", cartid)
+        productInfo =  ProductInfo.getProductInfoFromStore(productid,"add")#default is walmart
+        logging.info('productInfo being added ' + json.dumps(productInfo))
 
-        for data in gcmIdCartId :
-            if data.gcmId :
-                gcmId = data.gcmId
-                logging.info('GCMId' + gcmId)
-                logging.info('productInfo' + json.dumps(productInfo))
-                gcm = GCMHandler()
-                gcm.GCMSend(gcmId, productInfo)
-        #create logs
-        logging.info("Removed the Product ")
+        userId = None
+        gcmId = None
+
+        # making a db call for the first call and using cache for the next
+        if cartid not in CartHandler.cartGcmMap.keys() :
+            gcmIdCartId = db.GqlQuery("SELECT * from CartGcmMapping where cartId = :1", cartid)
+            for data in gcmIdCartId :
+                    gcmId = data.gcmId
+                    CartHandler.cartGcmMap[cartid] = gcmId
+                    logging.info('gcmId ' + gcmId)
+                    userId = data.userId
+                    CartHandler.cartUserMap[cartid] = userId
+                    logging.info('userId ' + userId)
+        else :
+            gcmId = CartHandler.cartGcmMap[cartid]
+            userId = CartHandler.cartUserMap[cartid]
+            logging.info('gcmId ' + gcmId + ' userId ' + userId)
+
+        if userId :
+            self.addPurchaseLogs(userId, productid, timeStamp)
+
+        if gcmId :
+            GCMHandler.GCMSend(gcmId, productInfo)
 
 
-   # def createProductLogs(self, cartID, productID) :
+
+
+    def removeProductFromCart(self, cartid, productid, timeStamp):
+
+        logging.info("cartId is " + cartid + "productId is " + productid)
+
+        productInfo =  ProductInfo.getProductInfoFromStore(productid,"remove")
+        logging.info('productInfo being removed ' + json.dumps(productInfo))
+
+        userId = None
+        gcmId = None
+
+        # making a db call for the first call and using cache for the next
+        if cartid not in CartHandler.cartGcmMap.keys() :
+            gcmIdCartId = db.GqlQuery("SELECT * from CartGcmMapping where cartId = :1", cartid)
+            for data in gcmIdCartId :
+                    gcmId = data.gcmId
+                    CartHandler.cartGcmMap[cartid] = gcmId
+                    logging.info('gcmId ' + gcmId)
+                    userId = data.userId
+                    CartHandler.cartUserMap[cartid] = userId
+                    logging.info('userId ' + userId)
+        else :
+            gcmId = CartHandler.cartGcmMap[cartid]
+            userId = CartHandler.cartUserMap[cartid]
+            logging.info('gcmId ' + gcmId + ' userId ' + userId)
+
+        #if userId :
+            #self.removePurchaseLogs(userId, productid, timeStamp)
+
+        if gcmId :
+            GCMHandler.GCMSend(gcmId, productInfo)
+
+
+
+    def addPurchaseLogs(self, userId, productId, timeStamp) :
+        purchaseLog = PurchaseLogs(userId = userId, productId = productId, purchaseTimeStamp = timeStamp)
+        purchaseLog.put()
+
+
+    """
+    def removePurchaseLogs(self, userId, productId, timeStamp) :
+        purchaseLog = PurchaseLogs(userId = userId, productId = productId, purchaseTimeStamp = timeStamp)
+        purchaseLog.put()
+    """
+
+
 
 

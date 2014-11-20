@@ -15,37 +15,40 @@
 # limitations under the License.
 #
 import webapp2
+import RequestObject
+import json
+import logging
+import datetime
 from CartHandler import CartHandler
 from GetProductHandler import   GetProductHandler
 from ProductInfo import ProductInfo
 from GCM import GCMHandler
-import RequestObject
-import json
-import logging
 from google.appengine.ext import db
-from DbModel import cartGcmMapping
+from DbModel import CartGcmMapping
 
 #$/sendproduct?cartid=1234567&productid=1234234234
 class CartHandle(webapp2.RequestHandler):
     def get(self):
+        timeStamp = datetime.datetime.now()
         url = self.request.uri
         productData = url.split('?')[1].split('&')
         cartId = productData[0].split('=')[1]
         productId = productData[1].split('=')[1]
         logging.info('cartId ' + cartId + 'productId ' + productId)
         com = CartHandler()
-        CartHandler.handleCartUpdates(com, cartId, productId)
+        CartHandler.addProductToCart(com, cartId, productId,timeStamp)
         self.response.out.write("{status: OK}")
 
 class CartHandleRemove(webapp2.RequestHandler):
     def get(self):
+        timeStamp = datetime.datetime.now()
         url = self.request.uri
         productData = url.split('?')[1].split('&')
         cartId = productData[0].split('=')[1]
         productId = productData[1].split('=')[1]
         logging.info('cartId ' + cartId + 'productId ' + productId)
         com = CartHandler()
-        CartHandler.removeProductFromCart(com, cartId, productId)
+        CartHandler.removeProductFromCart(com, cartId, productId, timeStamp)
 
 #$/paircart?cartid=1234567&userid=nishantmehta.n&gcmid=nvkjdsnjnsdvkjngfkbdfg
 class PairCart(webapp2.RequestHandler):
@@ -53,8 +56,8 @@ class PairCart(webapp2.RequestHandler):
           url = self.request.uri
           requestVar = self.getRequestObject(url)
           logging.info("gcm id " + requestVar.GCMID + " >>>>>>>>>>>>>>. cart id is " + requestVar.cartID)
-          gcmMap = cartGcmMapping(gcmId = requestVar.GCMID,  cartId = requestVar.cartID)
-          pairingInfo =  db.GqlQuery("SELECT * from cartGcmMapping where cartId = :1", requestVar.cartID)
+          gcmMap = CartGcmMapping(gcmId = requestVar.GCMID,  cartId = requestVar.cartID, userId = requestVar.userID)
+          pairingInfo =  db.GqlQuery("SELECT * from CartGcmMapping where cartId = :1", requestVar.cartID)
           if pairingInfo.count() > 0:
             if pairingInfo.get().gcmId != requestVar.GCMID:
                 GCMHandler.GCMSend(pairingInfo.get().gcmId,"Your pairing session has expired!")
@@ -79,8 +82,8 @@ class UnPairCart(webapp2.RequestHandler):
      def get(self):
           url = self.request.uri
           requestVar = self.getRequestObject(url)
-          gcmIdCartId = db.GqlQuery("SELECT * from cartGcmMapping where cartId = :1", requestVar.cartID)
-          db.delete(cartGcmMapping, gcmIdCartId)
+          gcmIdCartId = db.GqlQuery("SELECT * from CartGcmMapping where cartId = :1", requestVar.cartID)
+          db.delete(CartGcmMapping, gcmIdCartId)
           self.response.out.write("{status: OK}")
 
 
