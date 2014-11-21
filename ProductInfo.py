@@ -8,7 +8,7 @@ from httplib2 import Http
 
 class ProductInfo():
 
-    Mappings = dict(walmart= {"14401160":"40439294"} )
+    Mappings = dict(walmart= {"1240":"40439294", "2250": "10818609", "1580" : "10321565"} )
     WALMART_API = "http://api.walmartlabs.com/v1/items/"
     WALMART_API_KEY = "?apiKey=xnh83gg5vygkn4pfr4nvqmh4&format=json"
 

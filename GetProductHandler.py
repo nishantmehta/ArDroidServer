@@ -13,3 +13,5 @@ class GetProductHandler():
 
     def removeProductFromCart(self, cartId, productId):
         print "this functions will remove the product from cart"
+
+

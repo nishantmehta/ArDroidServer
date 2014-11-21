@@ -16,9 +16,10 @@ class PurchaseLogs(db.Model):
         purchaseTimeStamp = db.DateTimeProperty(required= True, indexed= True)
         userId = db.StringProperty(required=True, indexed= True)
         productId = db.StringProperty(required=True, indexed = False)
-
+        eventType = db.StringProperty(required= True, indexed= False)
 
 class CartGcmMapping(db.Model) :
         gcmId = db.StringProperty(required= True, indexed= False)
         cartId = db.StringProperty(required= True, indexed= True)
         userId = db.StringProperty(required= True, indexed= True)
+

@@ -38,7 +38,7 @@ class CartHandler():
             logging.info('gcmId ' + gcmId + ' userId ' + userId)
 
         if userId :
-            self.addPurchaseLogs(userId, productid, timeStamp)
+            self.addPurchaseLogs(userId, productid, timeStamp, "add")
 
         if gcmId :
             GCMHandler.GCMSend(gcmId, productInfo)
@@ -71,24 +71,19 @@ class CartHandler():
             userId = CartHandler.cartUserMap[cartid]
             logging.info('gcmId ' + gcmId + ' userId ' + userId)
 
-        #if userId :
-            #self.removePurchaseLogs(userId, productid, timeStamp)
+        if userId :
+            self.addPurchaseLogs(userId, productid, timeStamp, "remove")
 
         if gcmId :
             GCMHandler.GCMSend(gcmId, productInfo)
 
 
 
-    def addPurchaseLogs(self, userId, productId, timeStamp) :
-        purchaseLog = PurchaseLogs(userId = userId, productId = productId, purchaseTimeStamp = timeStamp)
+    def addPurchaseLogs(self, userId, productId, timeStamp, status) :
+        purchaseLog = PurchaseLogs(userId = userId, productId = productId, purchaseTimeStamp = timeStamp, eventType = status)
         purchaseLog.put()
 
 
-    """
-    def removePurchaseLogs(self, userId, productId, timeStamp) :
-        purchaseLog = PurchaseLogs(userId = userId, productId = productId, purchaseTimeStamp = timeStamp)
-        purchaseLog.put()
-    """
 
 
 
