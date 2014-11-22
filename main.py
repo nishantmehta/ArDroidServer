@@ -64,8 +64,10 @@ class PairCart(webapp2.RequestHandler):
                 for p in pairingInfo:
                     p.delete()
                 gcmMap.put()
-                del CartHandler.cartGcmMap[requestVar.cartID]
-                del CartHandler.cartUserMap[requestVar.cartID]
+                if  (requestVar.cartID  in CartHandler.cartGcmMap.keys()) :
+                    del CartHandler.cartGcmMap[requestVar.cartID]
+                if  (requestVar.cartID  in CartHandler.cartUserMap.keys()) :
+                    del CartHandler.cartUserMap[requestVar.cartID]
           else:
             gcmMap.put()
 
@@ -88,8 +90,10 @@ class UnPairCart(webapp2.RequestHandler):
           if (gcmIdCartId.count() > 0 ) :
               for data in gcmIdCartId :
                 data.delete()
-          del CartHandler.cartGcmMap[requestVar.cartID]
-          del CartHandler.cartUserMap[requestVar.cartID]
+              if  (requestVar.cartID  in CartHandler.cartGcmMap.keys()) :
+                del CartHandler.cartGcmMap[requestVar.cartID]
+              if  (requestVar.cartID  in CartHandler.cartUserMap.keys()) :
+                del CartHandler.cartUserMap[requestVar.cartID]
           self.response.out.write("{status: OK}")
 
 
