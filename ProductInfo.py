@@ -8,7 +8,7 @@ from httplib2 import Http
 
 class ProductInfo():
 
-    Mappings = dict(walmart= {"1240":"40439294", "2250": "10818609", "1580" : "10321565"} )
+    Mappings = dict(walmart= {"1240":"40439294", "2250": "10818609", "1580" : "10321565", "2096": "10818609", "3184":"40439294", "9744": "10849552" } )
     WALMART_API = "http://api.walmartlabs.com/v1/items/"
     WALMART_API_KEY = "?apiKey=xnh83gg5vygkn4pfr4nvqmh4&format=json"
 
@@ -32,12 +32,15 @@ class ProductInfo():
     def getProductInfoFromStore(productID,status,store="walmart"):
         storeMap = ProductInfo.Mappings[store]
         #Add exception handling in this place , if productId is not present
-        storeProductID = storeMap[productID]
-        url = ProductInfo.WALMART_API + storeProductID + ProductInfo.WALMART_API_KEY;
-        h = Http()
-        headers, content = h.request(url,"GET")
-        totalProduct = json.loads(content.decode("utf-8"))
-        return {"productID":productID, "productName":totalProduct['name'].encode('utf-8'),"price":totalProduct['salePrice'],"category":totalProduct['categoryPath'].encode('utf-8'), "status":status}#}
+        if (productID in storeMap.keys()) :
+            storeProductID = storeMap[productID]
+            url = ProductInfo.WALMART_API + storeProductID + ProductInfo.WALMART_API_KEY;
+            h = Http()
+            headers, content = h.request(url,"GET")
+            totalProduct = json.loads(content.decode("utf-8"))
+            return {"productID":productID, "productName":totalProduct['name'].encode('utf-8'),"price":totalProduct['salePrice'],"category":totalProduct['categoryPath'].encode('utf-8'), "status":status}#}
+        else :
+            return "PRODUCTID NOT FOUND"
 
     def inputProduct(self):
 
