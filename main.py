@@ -94,6 +94,9 @@ class UnPairCart(webapp2.RequestHandler):
                 del CartHandler.cartGcmMap[requestVar.cartID]
               if  (requestVar.cartID  in CartHandler.cartUserMap.keys()) :
                 del CartHandler.cartUserMap[requestVar.cartID]
+          else :
+              # error message when the cart is not paired
+                    self.response.out.write("{status: CART NOT PAIRED}")
           self.response.out.write("{status: OK}")
 
 
